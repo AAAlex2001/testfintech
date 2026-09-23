@@ -17,6 +17,13 @@ def test_terminal_data_schema(client: TestClient) -> None:
     assert resp.json() == TERMINAL_DATA_SCHEMA
 
 
+def test_terminal_data_schema_has_gate_connection_url(client: TestClient) -> None:
+    resp = client.get("/v2/terminal_data_schema")
+
+    field_names = [field["name"] for group in resp.json()["groups"] for field in group["fields"]]
+    assert "gate_connection.url" in field_names
+
+
 def test_trace_id_is_returned(client: TestClient) -> None:
     resp = client.get("/v2/ping", headers={"X-Trace-ID": "trace-1"})
 

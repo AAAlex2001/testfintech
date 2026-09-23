@@ -74,7 +74,7 @@ def test_sale_provider_error(client: TestClient, httpx_mock: HTTPXMock) -> None:
     data = resp.json()
     assert resp.status_code == 200
     assert data["status"] == gate_lib_const.FAILED
-    assert data["code"] == "PAYMENT_LINK_EXTERNAL_ID_DUPLICATE_EXCEPTION"
+    assert data["code"] == "validation_error"
     assert data["message"] == "External id duplicate"
     assert data["redirect"] is None
 
@@ -157,7 +157,7 @@ def test_sale_invalid_provider_response(
 
     data = resp.json()
     assert data["status"] == gate_lib_const.FAILED
-    assert data["code"] == "invalid_provider_response"
+    assert data["code"] == "validation_error"
 
 
 def test_sale_empty_provider_response(client: TestClient, httpx_mock: HTTPXMock) -> None:
@@ -167,7 +167,7 @@ def test_sale_empty_provider_response(client: TestClient, httpx_mock: HTTPXMock)
 
     data = resp.json()
     assert data["status"] == gate_lib_const.FAILED
-    assert data["code"] == "invalid_provider_response"
+    assert data["code"] == "validation_error"
     assert data["message"] == "Provider returned an empty response"
 
 
@@ -178,7 +178,8 @@ def test_sale_provider_timeout(client: TestClient, httpx_mock: HTTPXMock) -> Non
 
     data = resp.json()
     assert data["status"] == gate_lib_const.FAILED
-    assert data["code"] == "provider_timeout"
+    assert data["code"] == "validation_error"
+    assert data["message"] == "Provider did not respond in time"
 
 
 @pytest.mark.parametrize("provider_response", PROVIDER_UNAVAILABLE_RESPONSES)
@@ -193,7 +194,7 @@ def test_sale_provider_unavailable(
 
     data = resp.json()
     assert data["status"] == gate_lib_const.FAILED
-    assert data["code"] == "provider_unavailable"
+    assert data["code"] == "validation_error"
 
 
 def test_sale_provider_connection_error(client: TestClient, httpx_mock: HTTPXMock) -> None:
@@ -203,4 +204,5 @@ def test_sale_provider_connection_error(client: TestClient, httpx_mock: HTTPXMoc
 
     data = resp.json()
     assert data["status"] == gate_lib_const.FAILED
-    assert data["code"] == "provider_unavailable"
+    assert data["code"] == "validation_error"
+    assert data["message"] == "Provider is unavailable: connection refused"

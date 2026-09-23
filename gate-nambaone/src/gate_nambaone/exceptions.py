@@ -5,6 +5,8 @@
 По типу ошибки гейт решает, какой статус вернуть (см. GateNambaOne).
 """
 
+from gate_lib import const as gate_lib_const
+
 
 class GateError(Exception):
     """Базовая ошибка гейта."""
@@ -20,7 +22,7 @@ class GateError(Exception):
 class InvalidRequestError(GateError):
     """Запрос платформы нельзя отправить провайдеру: неверные настройки терминала, сумма, валюта."""
 
-    default_code = "validation_error"
+    default_code = gate_lib_const.VALIDATION_ERROR
 
 
 class ProviderError(GateError):

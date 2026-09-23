@@ -46,6 +46,8 @@ TERMINAL_DATA_SCHEMA: dict[str, Any] = {
             "label": "Connection",
             "fields": [
                 {"name": "provider_base_url", "label": "Provider Base URL", "type": "text", "required": True},
+                # Адрес этого гейта: по нему платформа отправляет запросы терминала
+                {"name": "gate_connection.url", "label": "Gate Connection URL", "type": "text", "required": True},
                 {"name": "proxy_url", "label": "Proxy URL", "type": "text", "required": False},
             ],
         },

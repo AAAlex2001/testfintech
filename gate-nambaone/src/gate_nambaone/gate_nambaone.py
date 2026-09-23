@@ -59,11 +59,12 @@ class GateNambaOne:
             payment_link = await NambaOneClient(terminal_data, self.request_timeout).create_payment_link(payload)
         except GateError as error:
             logger.warning("sale_failed", invoice_id=req.invoice_id, code=error.code, message=error.message)
+            # Платформа ждёт от sale один код ошибки, причина передаётся в message, исходный код пишется в лог
             return SaleResponse(
                 status=gate_lib_const.FAILED,
                 amount=req.amount,
                 currency_code=req.currency_code,
-                code=error.code,
+                code=gate_lib_const.VALIDATION_ERROR,
                 message=error.message,
             )
 

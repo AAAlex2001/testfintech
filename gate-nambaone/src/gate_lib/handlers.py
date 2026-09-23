@@ -3,6 +3,8 @@ from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from gate_lib import const
+
 logger = structlog.get_logger()
 
 
@@ -19,5 +21,5 @@ async def request_validation_error_handler(request: Request, exc: RequestValidat
     logger.warning("request_validation_error", path=request.url.path, errors=errors)
     return JSONResponse(
         status_code=422,
-        content={"code": "validation_error", "message": "Request is not valid", "errors": errors},
+        content={"code": const.VALIDATION_ERROR, "message": "Request is not valid", "errors": errors},
     )

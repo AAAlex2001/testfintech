@@ -83,7 +83,7 @@ poetry run pytest
 Без настоящего Namba One ответ будет таким: провайдер недоступен, платёж не создан, сервис не упал.
 
 ```json
-{"status": "failed", "code": "provider_unavailable", "message": "Provider is unavailable: ...", ...}
+{"status": "failed", "code": "validation_error", "message": "Provider is unavailable: ...", ...}
 ```
 
 С реальными доступами от Namba One (`provider_base_url`, `merchant_account_guid`, `secret_key`) вернётся `"status": "pending"` и `redirect.url` — ссылка на оплату.
@@ -124,6 +124,9 @@ poetry run pytest
 
 ```json
 {
+  "gate_connection": {
+    "url": "http://gate-nambaone:8000/v2"
+  },
   "provider_base_url": "https://api.namba-one.kg",
   "merchant_account_guid": "159e7e3b-94e1-48c7-bec5-952949f7935f",
   "secret_key": "secret from Namba One",
@@ -135,6 +138,7 @@ poetry run pytest
 
 | Поле | Обязательное | Параметр Namba One |
 |---|---|---|
+| `gate_connection.url` | да | не передаётся провайдеру: адрес гейта, по нему платформа шлёт запросы |
 | `provider_base_url` | да | `{baseUrl}` |
 | `merchant_account_guid` | да | `{merchantAccountGuid}` в URI |
 | `secret_key` | да | ключ HMAC-SHA512 для подписи |
@@ -173,7 +177,10 @@ poetry run pytest
 - **refund**: после таймаута или непонятного ответа возврат мог создаться у провайдера. Поэтому гейт возвращает `pending`, итог покажет `refund_status`. `refund_id` передаётся в URI и служит ключом идемпотентности.
 - **вебхук**: статусу из тела не доверяем и перезапрашиваем его у провайдера, так поддельный вебхук не проведёт платёж. Если подтвердить итог не удалось, отвечаем 503: Namba One повторяет вебхук каждые 5 секунд в течение часа. Если инвойс уже финальный, отвечаем 200 и провайдера не спрашиваем.
 
-Коды ошибок в поле `code`: `validation_error`, `provider_timeout`, `provider_unavailable`, `invalid_provider_response` или `errorCode` самого Namba One.
+Коды ошибок в поле `code`:
+
+- **sale** при любой ошибке возвращает `validation_error`. Причина передаётся в `message`, исходный код ошибки пишется в лог (`sale_failed`).
+- **Остальные методы** возвращают `validation_error`, `provider_timeout`, `provider_unavailable`, `invalid_provider_response` или `errorCode` самого Namba One.
 
 ## Структура
 
