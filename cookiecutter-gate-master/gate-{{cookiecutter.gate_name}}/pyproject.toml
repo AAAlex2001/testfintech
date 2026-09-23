@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "gate-{{cookiecutter.gate_name}}"
+version = "0.0.01"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.12"
+utils = { git = "https://gitlab.forcode.pro/fbp/utils.git" }
+gate_lib = { git = "https://gitlab.forcode.pro/fbp/gate_lib.git" }
+cds_client = { git = "https://gitlab.forcode.pro/fbp/cds-client.git" }
+sbank_client = { git = "https://gitlab.forcode.pro/sbank/sbank-client.git" }
+uvicorn = {extras = ["standard"], version = "^0.30.1"}
+respx = "^0.21.1"
+aiocache = "^0.12.2"
+elastic-apm = "^6.22.3"
+sentry-sdk = "^2.7.1"
+yarl = "^1.18.3"
+pydantic-settings = "^2.3.4"
+aiojobs = "^1.4.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+pre-commit = "^4.5.1"
+pytest-httpx = "^0.30.0"
+
+[build-system]
+requires = ["poetry-core>=1.8.1"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["I", "E", "F"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
